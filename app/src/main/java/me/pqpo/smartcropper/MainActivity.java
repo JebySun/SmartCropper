@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button btnTake;
     Button btnSelect;
+    Button btnPrewiew;
     ImageView ivShow;
 
     File photoFile;
@@ -23,9 +24,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        btnTake = (Button) findViewById(R.id.btn_take);
-        btnSelect = (Button) findViewById(R.id.btn_select);
-        ivShow = (ImageView) findViewById(R.id.iv_show);
+        btnTake = findViewById(R.id.btn_take);
+        btnSelect = findViewById(R.id.btn_select);
+        btnPrewiew = findViewById(R.id.btn_preview);
+        ivShow = findViewById(R.id.iv_show);
 
         photoFile = new File(getExternalFilesDir("img"), "scan.jpg");
 
@@ -40,6 +42,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivityForResult(CropActivity.getJumpIntent(MainActivity.this, true, photoFile), 100);
+            }
+        });
+
+        btnPrewiew.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, CropRealTimePreviewActivity.class));
             }
         });
     }

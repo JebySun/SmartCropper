@@ -23,7 +23,7 @@ public class SmartCropper {
             throw new IllegalArgumentException("srcBmp cannot be null");
         }
         Point[] outPoints = new Point[4];
-        nativeScan(srcBmp, outPoints);
+        SmartCropper.nativeScan(srcBmp, outPoints);
         return outPoints;
     }
 
@@ -51,6 +51,7 @@ public class SmartCropper {
                 + CropUtils.getPointsDistance(rightTop, rightBottom))/2);
 
         Bitmap cropBitmap = Bitmap.createBitmap(cropWidth, cropHeight, Bitmap.Config.ARGB_8888);
+
         SmartCropper.nativeCrop(srcBmp, cropPoints, cropBitmap);
         return cropBitmap;
     }
