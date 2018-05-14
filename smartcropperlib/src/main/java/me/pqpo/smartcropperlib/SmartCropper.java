@@ -24,6 +24,11 @@ public class SmartCropper {
         }
         Point[] outPoints = new Point[4];
         SmartCropper.nativeScan(srcBmp, outPoints);
+        for (Point p : outPoints) {
+            if (p == null) {
+                return null;
+            }
+        }
         return outPoints;
     }
 

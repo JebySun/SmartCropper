@@ -52,7 +52,7 @@ public class CropView extends View {
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        if (points == null || points.length == 0) {
+        if (points == null) {
             return;
         }
         canvas.drawLine(points[0].x, points[0].y, points[1].x, points[1].y, paint);

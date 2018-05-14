@@ -44,6 +44,7 @@ public class CropRealTimePreviewActivity extends AppCompatActivity {
     int surfaceWidth;
     int surfaceHeight;
 
+    private boolean isStop;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,7 +93,9 @@ public class CropRealTimePreviewActivity extends AppCompatActivity {
         camera.setPreviewCallback(new Camera.PreviewCallback() {
             @Override
             public void onPreviewFrame(byte[] bytes, Camera camera) {
-//                camera.stopPreview();
+                if (isStop) {
+                    camera.stopPreview();
+                }
                 //获得相机预览分辨率
                 Camera.Size previewSize = camera.getParameters().getPreviewSize();
                 YuvImage localYuvImage = new YuvImage(bytes, ImageFormat.NV21, previewSize.width, previewSize.height, null);
@@ -105,16 +108,16 @@ public class CropRealTimePreviewActivity extends AppCompatActivity {
                 localOptions.inPreferredConfig = Bitmap.Config.RGB_565; //构造位图生成的参数,必须为565。类名+enum
                 Bitmap bitmap = BitmapFactory.decodeByteArray(mParamArrayOfByte, 0, mParamArrayOfByte.length, localOptions);
 
-                //利用Matrix缩小成SurfaceView同样尺寸,然后旋转90度
+                //利用Matrix缩小成SurfaceView同样尺寸,然后再旋转90度
                 int bWidth = bitmap.getWidth();
                 int bHeight = bitmap.getHeight();
                 Matrix matrix = new Matrix();
+                matrix.postScale(surfaceHeight*1.0F / bWidth, surfaceWidth*1.0F / bHeight);
                 matrix.postRotate((float) 90.0);
-                matrix.postScale(surfaceWidth*1.0F / bHeight, surfaceHeight*1.0F / bWidth);
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0, bWidth, bHeight, matrix, true);
 
                 Point[] points = SmartCropper.scan(bitmap);
-                if (points != null && points.length != 0) {
+                if (points != null) {
                     cropView.setRectPoints(points);
                 }
 //                AndroidUtil.saveBitmapAsFile(bitmap, 80, Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "1024" + File.separator + System.currentTimeMillis() + ".jpg");
@@ -185,6 +188,12 @@ public class CropRealTimePreviewActivity extends AppCompatActivity {
         if (camera != null) {
             stopCamera();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        isStop = true;
+        super.onBackPressed();
     }
 
     /**
